@@ -172,22 +172,35 @@ def api_stats():
         app.logger.error(f'Error en api_stats: {str(e)}')
         return {'error': 'Error al obtener estadísticas'}, 500
 
+# Manejadores de error
 @app.errorhandler(404)
-def not_found(error):
-    """Página de error 404"""
+def page_not_found(error):
+    """Manejo de error 404"""
     return render_template('error.html', 
-                         error_code=404, 
+                         error_code=404,
                          error_message="Página no encontrada"), 404
 
 @app.errorhandler(500)
-def internal_error(error):
-    """Página de error 500"""
+def internal_server_error(error):
+    """Manejo de error 500"""
     return render_template('error.html', 
-                         error_code=500, 
+                         error_code=500,
                          error_message="Error interno del servidor"), 500
 
-# Configuración para producción
+# Asegurarse que base.html está disponible para todos los templates
+@app.context_processor
+def inject_base_template():
+    """Inyecta variables globales a todos los templates"""
+    return {
+        'sitename': 'Plataforma Académica',
+        'current_year': datetime.now().year
+    }
+
 if __name__ == '__main__':
-    # Configuración para producción
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+    # Crear directorio de templates si no existe
+    if not os.path.exists('templates'):
+        os.makedirs('templates')
+    
+    port = int(os.environ.get('PORT', 5001))
+    debug_mode = os.environ.get('FLASK_ENV') == 'development'
+    app.run(host='0.0.0.0', port=port, debug=debug_mode)
