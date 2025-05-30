@@ -1,1 +1,147 @@
+{% extends "base.html" %}
 
+{% block title %}Agregar Datos Académicos{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-lg">
+            <div class="card-header text-center bg-gradient text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <h2 class="mb-0">
+                    <i class="fas fa-book me-2"></i>
+                    Registro de Datos Académicos
+                </h2>
+                <p class="mb-0 mt-2">Ingrese la información de su asignatura</p>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" action="{{ url_for('add_data') }}" id="academicForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="nombre_asignatura" class="form-label fw-bold">
+                                <i class="fas fa-book-open text-primary me-1"></i>
+                                Nombre de la Asignatura *
+                            </label>
+                            <input type="text" class="form-control" id="nombre_asignatura" 
+                                   name="nombre_asignatura" required 
+                                   placeholder="Ej: Matemáticas Aplicadas">
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="numero_semana" class="form-label fw-bold">
+                                <i class="fas fa-calendar-week text-primary me-1"></i>
+                                Número de Semana *
+                            </label>
+                            <input type="number" class="form-control" id="numero_semana" 
+                                   name="numero_semana" required min="1" max="52"
+                                   placeholder="Ej: 1, 2, 3...">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="tema_general" class="form-label fw-bold">
+                            <i class="fas fa-layer-group text-primary me-1"></i>
+                            Tema General o Módulo *
+                        </label>
+                        <input type="text" class="form-control" id="tema_general" 
+                               name="tema_general" required
+                               placeholder="Ej: Introducción a las Derivadas">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="temas_especificos" class="form-label fw-bold">
+                            <i class="fas fa-list-ul text-primary me-1"></i>
+                            Temas Específicos
+                        </label>
+                        <textarea class="form-control" id="temas_especificos" 
+                                  name="temas_especificos" rows="3"
+                                  placeholder="Detalle los temas específicos que se abordarán..."></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="trabajo_individual" class="form-label fw-bold">
+                            <i class="fas fa-user text-primary me-1"></i>
+                            Trabajo Individual
+                        </label>
+                        <textarea class="form-control" id="trabajo_individual" 
+                                  name="trabajo_individual" rows="3"
+                                  placeholder="Describa las actividades individuales asignadas..."></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="bibliografia_recomendada" class="form-label fw-bold">
+                            <i class="fas fa-bookmark text-primary me-1"></i>
+                            Bibliografía Recomendada
+                        </label>
+                        <textarea class="form-control" id="bibliografia_recomendada" 
+                                  name="bibliografia_recomendada" rows="3"
+                                  placeholder="Liste la bibliografía principal recomendada..."></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="bibliografia_complementaria" class="form-label fw-bold">
+                            <i class="fas fa-book text-primary me-1"></i>
+                            Bibliografía Complementaria
+                        </label>
+                        <textarea class="form-control" id="bibliografia_complementaria" 
+                                  name="bibliografia_complementaria" rows="3"
+                                  placeholder="Liste la bibliografía adicional o complementaria..."></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="practica_individual_grupal" class="form-label fw-bold">
+                            <i class="fas fa-users text-primary me-1"></i>
+                            Práctica Individual y Grupal
+                        </label>
+                        <textarea class="form-control" id="practica_individual_grupal" 
+                                  name="practica_individual_grupal" rows="3"
+                                  placeholder="Describa las actividades prácticas individuales y grupales..."></textarea>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg px-5">
+                            <i class="fas fa-save me-2"></i>
+                            Guardar Datos
+                        </button>
+                        <a href="{{ url_for('view_data') }}" class="btn btn-outline-secondary btn-lg px-5 ms-3">
+                            <i class="fas fa-eye me-2"></i>
+                            Ver Datos
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('academicForm').addEventListener('submit', function(e) {
+    // Validación adicional del formulario
+    const requiredFields = ['nombre_asignatura', 'numero_semana', 'tema_general'];
+    let isValid = true;
+    
+    requiredFields.forEach(function(fieldId) {
+        const field = document.getElementById(fieldId);
+        if (!field.value.trim()) {
+            field.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            field.classList.remove('is-invalid');
+        }
+    });
+    
+    if (!isValid) {
+        e.preventDefault();
+        alert('Por favor complete todos los campos obligatorios (*)');
+    }
+});
+
+// Limpiar validación al escribir
+document.querySelectorAll('input, textarea').forEach(function(element) {
+    element.addEventListener('input', function() {
+        this.classList.remove('is-invalid');
+    });
+});
+</script>
+{% endblock %}
