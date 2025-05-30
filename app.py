@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, send_file, flash
+from flask import Flask, render_template, request, redirect, url_for, send_file, flash, send_from_directory
 import csv
 import os
 from datetime import datetime
@@ -171,6 +171,11 @@ def api_stats():
     except Exception as e:
         app.logger.error(f'Error en api_stats: {str(e)}')
         return {'error': 'Error al obtener estadísticas'}, 500
+
+# Ruta para servir archivos estáticos (opcional, Flask lo hace automáticamente)
+@app.route('/static/<path:filename>')
+def serve_static(filename):
+    return send_from_directory('static', filename)
 
 # Manejadores de error
 @app.errorhandler(404)
