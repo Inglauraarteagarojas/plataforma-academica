@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+
+{% block title %}Ver Datos Académicos{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-primary">
+        <i class="fas fa-table me-2"></i>
+        Datos Académicos Registrados
+    </h2>
+    <div>
+        <a href="{{ url_for('index') }}" class="btn btn-primary me-2">
+            <i class="fas fa-plus me-1"></i>
+            Agregar Nuevo
+        </a>
+        {% if data %}
+        <a href="{{ url_for('download_csv') }}" class="btn btn-success me-2">
+            <i class="fas fa-download me-1"></i>
+            Descargar CSV
+        </a>
+        <a href="{{ url_for('clear_all') }}" class="btn btn-danger" 
+           onclick="return confirm('¿Está seguro de que desea eliminar todos los datos?')">
+            <i class="fas fa-trash me-1"></i>
+            Limpiar Todo
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+{% if data %}
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-list me-2"></i>
+                    Total de Registros: {{ data|length }}
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th style="min-width: 150px;">Asignatura</th>
+                                <th style="width: 80px;">Semana</th>
+                                <th style="min-width: 200px;">Tema General</th>
+                                <th style="min-width: 200px;">Temas Específicos</th>
+                                <th style="min-width: 150px;">Trabajo Individual</th>
+                                <th style="min-width: 150px;">Bibliografía Recom.</th>
+                                <th style="min-width: 150px;">Bibliografía Compl.</th>
+                                <th style="min-width: 150px;">Práctica Ind./Grupal</th>
+                                <th style="width: 150px;">Fecha Creación</th>
+                                <th style="width: 100px;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in data %}
+                            <tr>
+                                <td class="fw-bold text-primary">{{ item.nombre_asignatura }}</td>
+                                <td class="text-center">
+                                    <span class="badge bg-primary rounded-pill">{{ item.numero_semana }}</span>
+                                </td>
+                                <td>{{ item.tema_general }}</td>
+                                <td>
+                                    <div class="text-truncate" style="max-width: 200px;" 
+                                         title="{{ item.temas_especificos }}">
+                                        {{ item.temas_especificos[:50] }}{% if item.temas_especificos|length > 50 %}...{% endif %}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="text-truncate" style="max-width: 150px;" 
+                                         title="{{ item.trabajo_individual }}">
+                                        {{ item.trabajo_individual[:40] }}{% if item.trabajo_individual|length > 40 %}...{% endif %}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="text-truncate" style="max-width: 150px;" 
+                                         title="{{ item.bibliografia_recomendada }}">
+                                        {{ item.bibliografia_recomendada[:40] }}{% if item.bibliografia_recomendada|length > 40 %}...{% endif %}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="text-truncate" style="max-width: 150px;" 
+                                         title="{{ item.bibliografia_complementaria }}">
+                                        {{ item.bibliografia_complementaria[:40] }}{% if item.bibliografia_complementaria|length > 40 %}...{% endif %}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="text-truncate" style="max-width: 150px;" 
+                                         title="{{ item.practica_individual_grupal }}">
+                                        {{ item.practica_individual_grupal[:40] }}{% if item.practica_individual_grupal|length > 40 %}...{% endif %}
+                                    </div>
+                                </td>
+                                <td class="text-muted small">{{ item.fecha_creacion }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-info me-1" 
+                                            onclick="showDetails({{ loop.index0 }})" 
+                                            title="Ver detalles">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <a href="{{ url_for('delete_data', index=loop.index0) }}" 
+                                       class="btn btn-sm btn-danger"
+                                       onclick="return confirm('¿Está seguro de eliminar este registro?')"
+                                       title="Eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para mostrar detalles -->
+<div class="modal fade" id="detailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Detalles del Registro
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="modalContent">
+                <!-- El contenido se llenará con JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<div class="text-center py-5">
+    <i class="fas fa-database fa-4x text-muted mb-3"></i>
+    <h3 class="text-muted">No hay datos registrados</h3>
+    <p class="text-muted mb-4">Comience agregando información académica usando el formulario.</p>
+    <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg">
+        <i class="fas fa-plus me-2"></i>
+        Agregar Primer Registro
+    </a>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Datos para el modal (pasados desde Flask)
+const academicData = {{ data | tojson }};
+
+function showDetails(index) {
+    const item = academicData[index];
+    const modalContent = document.getElementById('modalContent');
+    
+    modalContent.innerHTML = `
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <strong><i class="fas fa-book-open text-primary me-1"></i> Asignatura:</strong>
+                <p class="ms-3">${item.nombre_asignatura}</p>
+            </div>
+            <div class="col-md-6 mb-3">
+                <strong><i class="fas fa-calendar-week text-primary me-1"></i> Semana:</strong>
+                <p class="ms-3">${item.numero_semana}</p>
+            </div>
+        </div>
+        
+        <div class="mb-3">
+            <strong><i class="fas fa-layer-group text-primary me-1"></i> Tema General:</strong>
+            <p class="ms-3">${item.tema_general}</p>
+        </div>
+        
+        <div class="mb-3">
+            <strong><i class="fas fa-list-ul text-primary me-1"></i> Temas Específicos:</strong>
+            <p class="ms-3">${item.temas_especificos || 'No especificado'}</p>
+        </div>
+        
+        <div class="mb-3">
+            <strong><i class="fas fa-user text-primary me-1"></i> Trabajo Individual:</strong>
+            <p class="ms-3">${item.trabajo_individual || 'No especificado'}</p>
+        </div>
+        
+        <div class="mb-3">
+            <strong><i class="fas fa-bookmark text-primary me-1"></i> Bibliografía Recomendada:</strong>
+            <p class="ms-3">${item.bibliografia_recomendada || 'No especificada'}</p>
+        </div>
+        
+        <div class="mb-3">
+            <strong><i class="fas fa-book text-primary me-1"></i> Bibliografía Complementaria:</strong>
+            <p class="ms-3">${item.bibliografia_complementaria || 'No especificada'}</p>
+        </div>
+        
+        <div class="mb-3">
+            <strong><i class="fas fa-users text-primary me-1"></i> Práctica Individual y Grupal:</strong>
+            <p class="ms-3">${item.practica_individual_grupal || 'No especificada'}</p>
+        </div>
+        
+        <div class="mb-3">
+            <strong><i class="fas fa-clock text-primary me-1"></i> Fecha de Creación:</strong>
+            <p class="ms-3">${item.fecha_creacion}</p>
+        </div>
+    `;
+    
+    // Mostrar el modal
+    const modal = new bootstrap.Modal(document.getElementById('detailModal'));
+    modal.show();
+}
+</script>
+{% endblock %}
