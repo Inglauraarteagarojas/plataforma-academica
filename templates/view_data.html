@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Ver Datos Académicos{% endblock %}
+{% block title %}See academic data{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -34,7 +34,7 @@
             <div class="card-header bg-primary text-white">
                 <h5 class="mb-0">
                     <i class="fas fa-list me-2"></i>
-                    Total de Registros: {{ data|length }}
+                    Total Records: {{ data|length }}
                 </h5>
             </div>
             <div class="card-body p-0">
@@ -64,31 +64,31 @@
                                 <td>{{ item.general_topic }}</td>
                                 <td>
                                     <div class="text-truncate" style="max-width: 200px;" 
-                                         title="{{ item.temas_especificos }}">
+                                         title="{{ item.specific_topics }}">
                                         {{ item.specific_topics[:50] }}{% if item.specific_topics|length > 50 %}...{% endif %}
                                     </div>
                                 </td>
                                 <td>
                                     <div class="text-truncate" style="max-width: 150px;" 
-                                         title="{{ item.trabajo_individual }}">
+                                         title="{{ item.individual_work }}">
                                         {{ item.individual_work[:40] }}{% if item.individual_work|length > 40 %}...{% endif %}
                                     </div>
                                 </td>
                                 <td>
                                     <div class="text-truncate" style="max-width: 150px;" 
-                                         title="{{ item.bibliografia_recomendada }}">
+                                         title="{{ item.recommended_bibliography }}">
                                         {{ item.recommended_bibliography[:40] }}{% if item.recommended_bibliography|length > 40 %}...{% endif %}
                                     </div>
                                 </td>
                                 <td>
                                     <div class="text-truncate" style="max-width: 150px;" 
-                                         title="{{ item.bibliografia_complementaria }}">
+                                         title="{{ item.complementary_bibliography }}">
                                         {{ item.complementary_bibliography[:40] }}{% if item.complementary_bibliography|length > 40 %}...{% endif %}
                                     </div>
                                 </td>
                                 <td>
                                     <div class="text-truncate" style="max-width: 150px;" 
-                                         title="{{ item.practica_individual_grupal }}">
+                                         title="{{ item.individual_group_practice }}">
                                         {{ item.individual_group_practice[:40] }}{% if item.individual_group_practice|length > 40 %}...{% endif %}
                                     </div>
                                 </td>
@@ -96,13 +96,13 @@
                                 <td>
                                     <button class="btn btn-sm btn-info me-1" 
                                             onclick="showDetails({{ loop.index0 }})" 
-                                            title="Ver detalles">
+                                            title="View details">
                                         <i class="fas fa-eye"></i>
                                     </button>
                                     <a href="{{ url_for('delete_data', index=loop.index0) }}" 
                                        class="btn btn-sm btn-danger"
                                        onclick="return confirm('Are you sure to delete this record?')"
-                                       title="Eliminar">
+                                       title="Remove">
                                         <i class="fas fa-trash"></i>
                                     </a>
                                 </td>
@@ -123,7 +123,7 @@
             <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title">
                     <i class="fas fa-info-circle me-2"></i>
-                    Detalles del Registro
+                  Registration Details
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
@@ -131,7 +131,7 @@
                 <!-- El contenido se llenará con JavaScript -->
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -140,11 +140,11 @@
 {% else %}
 <div class="text-center py-5">
     <i class="fas fa-database fa-4x text-muted mb-3"></i>
-    <h3 class="text-muted">No hay datos registrados</h3>
-    <p class="text-muted mb-4">Comience agregando información académica usando el formulario.</p>
+    <h3 class="text-muted">No data recorded/h3>
+    <p class="text-muted mb-4">Start by adding academic information using the form.</p>
     <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg">
         <i class="fas fa-plus me-2"></i>
-        Agregar Primer Registro
+        Add First Record
     </a>
 </div>
 {% endif %}
@@ -162,48 +162,48 @@ function showDetails(index) {
     modalContent.innerHTML = `
         <div class="row">
             <div class="col-md-6 mb-3">
-                <strong><i class="fas fa-book-open text-primary me-1"></i> Asignatura:</strong>
-                <p class="ms-3">${item.nombre_asignatura}</p>
+                <strong><i class="fas fa-book-open text-primary me-1"></i> Subject:</strong>
+                <p class="ms-3">${item.subject_name}</p>
             </div>
             <div class="col-md-6 mb-3">
-                <strong><i class="fas fa-calendar-week text-primary me-1"></i> Semana:</strong>
-                <p class="ms-3">${item.numero_semana}</p>
+                <strong><i class="fas fa-calendar-week text-primary me-1"></i> Week:</strong>
+                <p class="ms-3">${item.week_number}</p>
             </div>
         </div>
         
         <div class="mb-3">
             <strong><i class="fas fa-layer-group text-primary me-1"></i> Tema General:</strong>
-            <p class="ms-3">${item.tema_general}</p>
+            <p class="ms-3">${item.general_topic}</p>
         </div>
         
         <div class="mb-3">
-            <strong><i class="fas fa-list-ul text-primary me-1"></i> Temas Específicos:</strong>
-            <p class="ms-3">${item.temas_especificos || 'No especificado'}</p>
+            <strong><i class="fas fa-list-ul text-primary me-1"></i>Specific Topics:</strong>
+            <p class="ms-3">${item.specific_topics || 'Unspecified'}</p>
         </div>
         
         <div class="mb-3">
-            <strong><i class="fas fa-user text-primary me-1"></i> Trabajo Individual:</strong>
-            <p class="ms-3">${item.trabajo_individual || 'No especificado'}</p>
+            <strong><i class="fas fa-user text-primary me-1"></i> Individual Work:</strong>
+            <p class="ms-3">${item.individual_work|| 'Unspecified'}</p>
         </div>
         
         <div class="mb-3">
-            <strong><i class="fas fa-bookmark text-primary me-1"></i> Bibliografía Recomendada:</strong>
-            <p class="ms-3">${item.bibliografia_recomendada || 'No especificada'}</p>
+            <strong><i class="fas fa-bookmark text-primary me-1"></i> recommended bibliography:</strong>
+            <p class="ms-3">${item.recommended_bibliography || 'Unspecified'}</p>
         </div>
         
         <div class="mb-3">
-            <strong><i class="fas fa-book text-primary me-1"></i> Bibliografía Complementaria:</strong>
-            <p class="ms-3">${item.bibliografia_complementaria || 'No especificada'}</p>
+            <strong><i class="fas fa-book text-primary me-1"></i> Complementary Bibliography:</strong>
+            <p class="ms-3">${item.complementary_bibliography || 'Unspecified'}</p>
         </div>
         
         <div class="mb-3">
-            <strong><i class="fas fa-users text-primary me-1"></i> Práctica Individual y Grupal:</strong>
-            <p class="ms-3">${item.practica_individual_grupal || 'No especificada'}</p>
+            <strong><i class="fas fa-users text-primary me-1"></i> Individual and Group Practice:</strong>
+            <p class="ms-3">${item.individual_group_practice || 'Unspecified'}</p>
         </div>
         
         <div class="mb-3">
-            <strong><i class="fas fa-clock text-primary me-1"></i> Fecha de Creación:</strong>
-            <p class="ms-3">${item.fecha_creacion}</p>
+            <strong><i class="fas fa-clock text-primary me-1"></i>Creation Date:</strong>
+            <p class="ms-3">${item.creation_date}</p>
         </div>
     `;
     
