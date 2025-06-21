@@ -6,22 +6,22 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="text-primary">
         <i class="fas fa-table me-2"></i>
-        Datos Académicos Registrados
+       Recorded Academic Data
     </h2>
     <div>
         <a href="{{ url_for('index') }}" class="btn btn-primary me-2">
             <i class="fas fa-plus me-1"></i>
-            Agregar Nuevo
+            Add New
         </a>
         {% if data %}
         <a href="{{ url_for('download_csv') }}" class="btn btn-success me-2">
             <i class="fas fa-download me-1"></i>
-            Descargar CSV
+           Download CSV
         </a>
         <a href="{{ url_for('clear_all') }}" class="btn btn-danger" 
-           onclick="return confirm('¿Está seguro de que desea eliminar todos los datos?')">
+           onclick="return confirm('Are you sure you want to delete all data?')">
             <i class="fas fa-trash me-1"></i>
-            Limpiar Todo
+            Clear All
         </a>
         {% endif %}
     </div>
@@ -42,57 +42,57 @@
                     <table class="table table-hover mb-0">
                         <thead>
                             <tr>
-                                <th style="min-width: 150px;">Asignatura</th>
-                                <th style="width: 80px;">Semana</th>
-                                <th style="min-width: 200px;">Tema General</th>
-                                <th style="min-width: 200px;">Temas Específicos</th>
-                                <th style="min-width: 150px;">Trabajo Individual</th>
-                                <th style="min-width: 150px;">Bibliografía Recom.</th>
-                                <th style="min-width: 150px;">Bibliografía Compl.</th>
-                                <th style="min-width: 150px;">Práctica Ind./Grupal</th>
-                                <th style="width: 150px;">Fecha Creación</th>
-                                <th style="width: 100px;">Acciones</th>
+                                <th style="min-width: 150px;">Subject</th>
+                                <th style="width: 80px;">Week</th>
+                                <th style="min-width: 200px;">General Topic</th>
+                                <th style="min-width: 200px;">Specific Topics</th>
+                                <th style="min-width: 150px;">Individual Work</th>
+                                <th style="min-width: 150px;">Recom Bibliography.</th>
+                                <th style="min-width: 150px;">Complete Bibliography.</th>
+                                <th style="min-width: 150px;">Individual/Group Practice</th>
+                                <th style="width: 150px;">Creation Date</th>
+                                <th style="width: 100px;">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for item in data %}
                             <tr>
-                                <td class="fw-bold text-primary">{{ item.nombre_asignatura }}</td>
+                                <td class="fw-bold text-primary">{{ item.subject_name }}</td>
                                 <td class="text-center">
-                                    <span class="badge bg-primary rounded-pill">{{ item.numero_semana }}</span>
+                                    <span class="badge bg-primary rounded-pill">{{ item.week_number }}</span>
                                 </td>
-                                <td>{{ item.tema_general }}</td>
+                                <td>{{ item.general_topic }}</td>
                                 <td>
                                     <div class="text-truncate" style="max-width: 200px;" 
                                          title="{{ item.temas_especificos }}">
-                                        {{ item.temas_especificos[:50] }}{% if item.temas_especificos|length > 50 %}...{% endif %}
+                                        {{ item.specific_topics[:50] }}{% if item.specific_topics|length > 50 %}...{% endif %}
                                     </div>
                                 </td>
                                 <td>
                                     <div class="text-truncate" style="max-width: 150px;" 
                                          title="{{ item.trabajo_individual }}">
-                                        {{ item.trabajo_individual[:40] }}{% if item.trabajo_individual|length > 40 %}...{% endif %}
+                                        {{ item.individual_work[:40] }}{% if item.individual_work|length > 40 %}...{% endif %}
                                     </div>
                                 </td>
                                 <td>
                                     <div class="text-truncate" style="max-width: 150px;" 
                                          title="{{ item.bibliografia_recomendada }}">
-                                        {{ item.bibliografia_recomendada[:40] }}{% if item.bibliografia_recomendada|length > 40 %}...{% endif %}
+                                        {{ item.recommended_bibliography[:40] }}{% if item.recommended_bibliography|length > 40 %}...{% endif %}
                                     </div>
                                 </td>
                                 <td>
                                     <div class="text-truncate" style="max-width: 150px;" 
                                          title="{{ item.bibliografia_complementaria }}">
-                                        {{ item.bibliografia_complementaria[:40] }}{% if item.bibliografia_complementaria|length > 40 %}...{% endif %}
+                                        {{ item.complementary_bibliography[:40] }}{% if item.complementary_bibliography|length > 40 %}...{% endif %}
                                     </div>
                                 </td>
                                 <td>
                                     <div class="text-truncate" style="max-width: 150px;" 
                                          title="{{ item.practica_individual_grupal }}">
-                                        {{ item.practica_individual_grupal[:40] }}{% if item.practica_individual_grupal|length > 40 %}...{% endif %}
+                                        {{ item.individual_group_practice[:40] }}{% if item.individual_group_practice|length > 40 %}...{% endif %}
                                     </div>
                                 </td>
-                                <td class="text-muted small">{{ item.fecha_creacion }}</td>
+                                <td class="text-muted small">{{ item.creation_date }}</td>
                                 <td>
                                     <button class="btn btn-sm btn-info me-1" 
                                             onclick="showDetails({{ loop.index0 }})" 
@@ -101,7 +101,7 @@
                                     </button>
                                     <a href="{{ url_for('delete_data', index=loop.index0) }}" 
                                        class="btn btn-sm btn-danger"
-                                       onclick="return confirm('¿Está seguro de eliminar este registro?')"
+                                       onclick="return confirm('Are you sure to delete this record?')"
                                        title="Eliminar">
                                         <i class="fas fa-trash"></i>
                                     </a>
