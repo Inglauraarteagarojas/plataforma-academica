@@ -45,7 +45,7 @@ def add_data():
         
         # Validar que el número de semana sea válido
         try:
-            semana = int(data['nweek_number'])
+            semana = int(data['week_number'])
             if semana < 1 or semana > 52:
                 flash('The week number must be between 1 and 52', 'error')
                 return redirect(url_for('index'))
