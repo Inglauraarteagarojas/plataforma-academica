@@ -16,50 +16,50 @@ academic_data = []
 
 @app.route('/')
 def index():
-    """Página principal con el formulario"""
+    """Home page with the form"""
     return render_template('index.html')
 
 @app.route('/add_data', methods=['POST'])
 def add_data():
-    """Procesar datos del formulario"""
+    """process form data"""
     try:
         # Obtener datos del formulario
         data = {
-            'nombre_asignatura': request.form.get('nombre_asignatura', '').strip(),
-            'numero_semana': request.form.get('numero_semana', '').strip(),
-            'tema_general': request.form.get('tema_general', '').strip(),
-            'temas_especificos': request.form.get('temas_especificos', '').strip(),
-            'trabajo_individual': request.form.get('trabajo_individual', '').strip(),
-            'bibliografia_recomendada': request.form.get('bibliografia_recomendada', '').strip(),
-            'bibliografia_complementaria': request.form.get('bibliografia_complementaria', '').strip(),
-            'practica_individual_grupal': request.form.get('practica_individual_grupal', '').strip(),
-            'fecha_creacion': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            'subject_name': request.form.get('subject_name', '').strip(),
+            'week_number': request.form.get('week_number', '').strip(),
+            'general_topic': request.form.get('general_topic', '').strip(),
+            'specific_topics': request.form.get('specific_topics', '').strip(),
+            'individual_work': request.form.get('individual_work', '').strip(),
+            'recommended_bibliography': request.form.get('recommended_bibliography', '').strip(),
+            'complementary_bibliography': request.form.get('complementary_bibliography', '').strip(),
+            'individual_group_practice': request.form.get('individual_group_practice', '').strip(),
+            'creation_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         }
         
         # Validar que los campos obligatorios no estén vacíos
-        required_fields = ['nombre_asignatura', 'numero_semana', 'tema_general']
+        required_fields = ['subject_name', 'week_number', 'general_topic']
         for field in required_fields:
             if not data[field]:
-                flash(f'El campo {field.replace("_", " ").title()} es obligatorio', 'error')
+                flash(f'The field {field.replace("_", " ").title()} is required', 'error')
                 return redirect(url_for('index'))
         
         # Validar que el número de semana sea válido
         try:
-            semana = int(data['numero_semana'])
+            semana = int(data['nweek_number'])
             if semana < 1 or semana > 52:
-                flash('El número de semana debe estar entre 1 y 52', 'error')
+                flash('The week number must be between 1 and 52', 'error')
                 return redirect(url_for('index'))
         except ValueError:
-            flash('El número de semana debe ser un número válido', 'error')
+            flash('The week number must be a valid number', 'error')
             return redirect(url_for('index'))
         
         # Agregar datos a la lista
         academic_data.append(data)
-        flash('Datos agregados exitosamente', 'success')
+        flash('Data added successfully', 'success')
         
     except Exception as e:
-        flash(f'Error al procesar los datos: {str(e)}', 'error')
-        app.logger.error(f'Error en add_data: {str(e)}')
+        flash(f'Error processing data: {str(e)}', 'error')
+        app.logger.error(f'Error in add_data: {str(e)}')
     
     return redirect(url_for('view_data'))
 
@@ -72,7 +72,7 @@ def view_data():
 def download_csv():
     """Generar y descargar archivo CSV"""
     if not academic_data:
-        flash('No hay datos para exportar', 'error')
+        flash('There is no data to export', 'error')
         return redirect(url_for('view_data'))
     
     try:
@@ -82,37 +82,37 @@ def download_csv():
         
         # Escribir encabezados
         headers = [
-            'Nombre de la Asignatura',
-            'Número de Semana',
-            'Tema General/Módulo',
-            'Temas Específicos',
-            'Trabajo Individual',
-            'Bibliografía Recomendada',
-            'Bibliografía Complementaria',
-            'Práctica Individual y Grupal',
-            'Fecha de Creación'
+            'subject_name',
+            'week_number',
+            'general_topic',
+            'specific_topics',
+            'individual_work',
+            'recommended_bibliography',
+            'complementary_bibliography',
+            'individual_group_practice',
+            'creation_date'
         ]
         writer.writerow(headers)
         
         # Escribir datos
         for row in academic_data:
             writer.writerow([
-                row['nombre_asignatura'],
-                row['numero_semana'],
-                row['tema_general'],
-                row['temas_especificos'],
-                row['trabajo_individual'],
-                row['bibliografia_recomendada'],
-                row['bibliografia_complementaria'],
-                row['practica_individual_grupal'],
-                row['fecha_creacion']
+                row['subject_name'],
+                row['week_number'],
+                row['general_topic'],
+                row['specific_topics'],
+                row['individual_work'],
+                row['recommended_bibliography'],
+                row['complementary_bibliography'],
+                row['individual_group_practice'],
+                row['fcreation_date']
             ])
         
         # Preparar archivo para descarga
         output.seek(0)
         
         # Crear nombre de archivo con timestamp
-        filename = f'datos_academicos_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv'
+        filename = f'academic_data_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv'
         
         # Convertir a bytes para Flask
         csv_data = output.getvalue().encode('utf-8-sig')  # utf-8-sig para compatibilidad con Excel
@@ -125,7 +125,7 @@ def download_csv():
         )
         
     except Exception as e:
-        flash(f'Error al generar CSV: {str(e)}', 'error')
+        flash(f'Error generating CSV: {str(e)}', 'error')
         app.logger.error(f'Error en download_csv: {str(e)}')
         return redirect(url_for('view_data'))
 
@@ -135,11 +135,11 @@ def delete_data(index):
     try:
         if 0 <= index < len(academic_data):
             deleted_item = academic_data.pop(index)
-            flash(f'Registro "{deleted_item["nombre_asignatura"]}" eliminado exitosamente', 'success')
+            flash(f'Record "{deleted_item["subject_name"]}" successfully removed', 'success')
         else:
-            flash('Registro no encontrado', 'error')
+            flash('Record not found', 'error')
     except Exception as e:
-        flash(f'Error al eliminar registro: {str(e)}', 'error')
+        flash(f'Error deleting record: {str(e)}', 'error')
         app.logger.error(f'Error en delete_data: {str(e)}')
     
     return redirect(url_for('view_data'))
@@ -151,10 +151,10 @@ def clear_all():
     try:
         count = len(academic_data)
         academic_data = []
-        flash(f'{count} registros eliminados exitosamente', 'success')
+        flash(f'{count} records successfully deleted', 'success')
     except Exception as e:
-        flash(f'Error al limpiar datos: {str(e)}', 'error')
-        app.logger.error(f'Error en clear_all: {str(e)}')
+        flash(f'Error clearing data: {str(e)}', 'error')
+        app.logger.error(f'Error in clear_all: {str(e)}')
     
     return redirect(url_for('view_data'))
 
@@ -163,14 +163,14 @@ def api_stats():
     """API endpoint para estadísticas básicas"""
     try:
         stats = {
-            'total_registros': len(academic_data),
-            'asignaturas_unicas': len(set(item['nombre_asignatura'] for item in academic_data)),
-            'ultima_actualizacion': academic_data[-1]['fecha_creacion'] if academic_data else None
+            'total_records': len(academic_data),
+            'single_subjects': len(set(item['subject_name'] for item in academic_data)),
+            'last_update': academic_data[-1]['creation_date'] if academic_data else None
         }
         return stats
     except Exception as e:
-        app.logger.error(f'Error en api_stats: {str(e)}')
-        return {'error': 'Error al obtener estadísticas'}, 500
+        app.logger.error(f'Error in api_stats: {str(e)}')
+        return {'error': 'Error getting statistics'}, 500
 
 # Ruta para servir archivos estáticos (opcional, Flask lo hace automáticamente)
 @app.route('/static/<path:filename>')
@@ -183,21 +183,21 @@ def page_not_found(error):
     """Manejo de error 404"""
     return render_template('error.html', 
                          error_code=404,
-                         error_message="Página no encontrada"), 404
+                         error_message="Page not found"), 404
 
 @app.errorhandler(500)
 def internal_server_error(error):
     """Manejo de error 500"""
     return render_template('error.html', 
                          error_code=500,
-                         error_message="Error interno del servidor"), 500
+                         error_message="Internal Server Error"), 500
 
 # Asegurarse que base.html está disponible para todos los templates
 @app.context_processor
 def inject_base_template():
     """Inyecta variables globales a todos los templates"""
     return {
-        'sitename': 'Plataforma Académica',
+        'sitename': 'Academic Platform',
         'current_year': datetime.now().year
     }
 
